@@ -90,5 +90,89 @@ def criar_tarefa():
     return jsonify(nova_tarefa), 201
 
 
+@app.route("/tarefas/<int:id>", methods=['PUT'])
+def atualizar_tarefa(id):
+    dados = request.get_json()
+
+    campos_obrigatorios = ["titulo", "descricao", "concluida"]
+
+    for campo in campos_obrigatorios:
+        if campo not in dados:
+            return jsonify({"erro": f"Campo {campo} é obrigatório"}), 400
+
+    for tarefa in tarefas:
+        if tarefa["id"] == id:
+            tarefa["titulo"] = dados["titulo"]
+            tarefa["descricao"] = dados["descricao"]
+            tarefa["concluida"] = dados["concluida"]
+
+            return jsonify(tarefa), 201
+
+    return jsonify({"erro":"Não encontrado"}), 404
+
+
+@app.route("/alunos/<int:id>", methods=['PUT'])
+def atualizar_aluno(id):
+    dados_alunos = request.get_json()
+
+    campos_obrigatorios_alunos = ["nome", "curso"]
+
+    for campo in campos_obrigatorios_alunos:
+        if campo not in dados_alunos:
+            return jsonify({"erro": f"Campo {campo} é obrigatório"}), 400
+
+    for aluno in alunos:
+        if aluno["id"] == id:
+            aluno["nome"] = dados_alunos["nome"]
+            aluno["curso"] = dados_alunos["curso"]
+
+            return jsonify(aluno), 201
+
+    return jsonify({"erro":"ID aluno não encontrado"}), 404
+
+"""
+@app.route("/tarefas/<int:id>", methods=['PATCH'])
+def atualizar_campo_tarefas(id):
+    dados_tarefas = request.get_json()
+
+    for tarefa in tarefas:
+        if tarefa["id"] == id:
+            if "titulo" in dados_tarefas:
+                tarefa["titulo"] = dados_tarefas["titulo"]
+
+            if "descricao" in dados_tarefas:
+                tarefa["descricao"] = dados_tarefas["descricao"]
+
+            if "concluida" in dados_tarefas:
+                tarefa["concluida"] = dados_tarefas["concluida"]
+
+            return jsonify(tarefa), 201
+
+    return jsonify({"erro": "ID tarefa não encontrado"}), 404
+
+"""
+@app.route("/tarefas/<int:id>", methods=['PATCH'])
+def atualizar_campo_tarefas(id):
+    dados_tarefas = request.get_json()
+    for tarefa in tarefas:
+        if tarefa["id"] == id:
+            tarefa["titulo"] = dados_tarefas.get("titulo", tarefa["titulo"])
+            tarefa["descricao"] = dados_tarefas.get("descricao", tarefa["descricao"])
+            tarefa["concluida"] = dados_tarefas.get("concluida", tarefa["concluida"])
+            return jsonify(tarefa), 201
+    return jsonify({"erro": "ID tarefa não encontrado"}), 404
+
+
+@app.route("/tarefas/<int:id>", methods=['DELETE'])
+def excluir_tarefas(id):
+    for tarefa in tarefas:
+        if tarefa["id"] == id:
+            tarefas.remove(tarefa)
+
+            return jsonify({"mensagem":"Tarefa removida com sucesso"}), 200
+
+    return jsonify({"erro":"ID tarefa não encontrado"}), 404
+
+
 if __name__ == '__main__':
     app.run(debug=True)

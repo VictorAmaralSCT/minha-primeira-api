@@ -1,7 +1,2 @@
-POST http://127.0.0.1:5000/tarefas
-Content-Type: application/json
-
-{
-  "titulo": "Testando POST",
-  "descricao": "Criar uma nova tarefa pelo metodo post"
-}
+DELETE http://127.0.0.1:5000/tarefas/2
+#Content-Type: application/json
